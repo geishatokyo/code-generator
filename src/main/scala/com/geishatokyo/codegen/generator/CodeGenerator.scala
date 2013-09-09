@@ -7,8 +7,7 @@ package com.geishatokyo.codegen.generator
  */
 trait CodeGenerator[T] {
 
-
-  def generate(models : T)(implicit context : Context) : List[GeneratedCode]
+  def generate(models : List[T])(implicit context : Context) : List[GeneratedCode]
 
 
 }
