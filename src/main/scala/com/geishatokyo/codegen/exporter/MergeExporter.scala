@@ -19,9 +19,11 @@ case class MergeExporter(groupName : String,extension : String,exportDir : File)
     if (baseFilePath.exists()){
       val baseFile = baseFilePath.readAsString()
       val b = merger.merge(baseFile,code.code)
-      if (b.hashCode != b.hashCode){
+      if (b != baseFile){
         println("Merger file " + baseFilePath.getAbsolutePath)
         baseFilePath.write(b)
+      }else{
+        println("File didn't change:" + baseFilePath.getAbsolutePath)
       }
     }else{
       println("Create new file " + baseFilePath.getAbsolutePath)

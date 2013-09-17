@@ -21,7 +21,9 @@ trait GenericDSLParser extends RegexParsers{
   def defName = string
 
   // def options
-  def definitionOptionDefs = rep(optionDef)
+  def definitionOptionDefs : Parser[List[OptionValue]] =
+    ((optionDef ~ definitionOptionDefs) ^^ {case h ~ tails => h :: tails}) |
+    (guard(lineBreak) ^^^ { Nil })
 
 
 

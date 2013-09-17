@@ -20,7 +20,7 @@ trait NormalFileExporter extends FileExporter {
 
   lazy val ext = if (extension.startsWith(".")) extension else ("." + extension)
 
-  def filename(code : GeneratedCode) = code.name + extension
+  def filename(code : GeneratedCode) = code.name + ext
 
   def beforeExportToTemp() {
     if (dir.exists()){

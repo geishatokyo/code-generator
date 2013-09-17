@@ -25,8 +25,10 @@ class GenericDSLParserTest extends Specification {
           |    hoge
           |    fuga
           |  }}}
+          |@@class Fuga
+          |  id : Long
           |
-          |@@enum bbb
+          |@@enum bbb : A
           |  test : String
           |  array : List[Hoge]
           |  fuga : Map[String,Int]
@@ -35,8 +37,9 @@ class GenericDSLParserTest extends Specification {
           |
         """.stripMargin)
 
-      defs.size === 2
+      defs.size === 3
 
+      println(defs)
 
     }
   }
