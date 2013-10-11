@@ -13,7 +13,7 @@ import scala.Some
 class Merger {
   val parser = new ReplaceMarkerParser
 
-  val lineSep = "\n"
+  val lineSep = System.getProperty("line.separator")
 
 
   def merge( base : String, replace : String) = {
@@ -34,7 +34,11 @@ class Merger {
         replaceMerge(baseBlocks,replaceBlocks)
       }
       case _ => {
-        toString(replaceBlocks)
+        if(baseBlocks.exists(_.isInstanceOf[InsteadOfBlock])){
+          holdMerge(baseBlocks,replaceBlocks)
+        }else{
+          toString(replaceBlocks)
+        }
       }
     }
 
@@ -51,10 +55,22 @@ class Merger {
   protected def holdMerge( base : List[Block], replace : List[Block]) : String = {
     val builder = new StringBuilder()
     val nameMap = toNameMap(base)
+    var insteadOfBlocks = base.collect({
+      case insteadOf : InsteadOfBlock => insteadOf
+    })
 
     replace.foreach({
       case StringBlock(lines) => {
-        lines.foreach(l => builder.append(l + lineSep))
+        val _lines = if(insteadOfBlocks.size > 0){
+          val (replaced,_lines) = applyInsteadOf(insteadOfBlocks.head,lines)
+          if(replaced){
+            insteadOfBlocks = insteadOfBlocks.tail
+          }
+          _lines
+        }else{
+          lines
+        }
+        _lines.foreach(l => builder.append(l + lineSep))
       }
       case HoldBlock(name,blocks) => {
         nameMap.get("hold." + name) match{
@@ -69,6 +85,9 @@ class Merger {
       }
       case ReplaceBlock(name,blocks) => {
         builder.append(toString(blocks))
+      }
+      case InsteadOfBlock(targets,lines) => {
+        lines.foreach(l => builder.append(l + lineSep))
       }
     })
     builder.toString()
@@ -154,6 +173,16 @@ class Merger {
   }
 
 
+  def applyInsteadOf(insteadOf : InsteadOfBlock,lines : List[String]) = {
+    var i = lines.indexOfSlice(insteadOf.replaceTarget)
+
+    if(i >= 0){
+      true -> (lines.take(i) ::: insteadOf.allLines ::: lines.drop(i + insteadOf.replaceTarget.size))
+    }else{
+      false -> lines
+    }
+
+  }
 
 }
 

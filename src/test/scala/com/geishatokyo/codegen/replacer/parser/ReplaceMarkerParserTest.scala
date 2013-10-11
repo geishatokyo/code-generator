@@ -35,13 +35,18 @@ class ReplaceMarkerParserTest extends Specification{
           |  ##end
           |##end
           |
+          |/* ##insteadOf
+          |
+          |##insert */
+          |
+          |//##end
           |
           |bbb
         """.stripMargin.lines)
 
       println(blocks)
 
-      blocks must haveSize(5)
+      blocks must haveSize(7)
 
 
     }

@@ -40,7 +40,7 @@ class MergerTest extends Specification {
           |Great!
         """.stripMargin)
 
-      s ===
+      s.trim ===
         """
           | Out side of hold
           |
@@ -53,7 +53,7 @@ class MergerTest extends Specification {
           |##end
           |
           |Great!
-        """.stripMargin
+        """.stripMargin.trim
 
 
     }
@@ -153,6 +153,43 @@ class MergerTest extends Specification {
           |##end
           |b
         """.stripMargin
+
+    }
+  }
+
+  "InsteadOf" should{
+    "insert" in {
+
+      val merger = new Merger
+      val s = merger.merge("""
+        |/*##insteadOf
+        |自動生成が気に入らない場合は
+        |##insert*/
+        |
+        |変わりにこれを挿入できます。
+        |
+        |//##end
+        |
+      """.stripMargin,
+       """こっちは自動生成されたコード
+        |自動生成が気に入らない場合は
+        |なんとかしろ
+        |
+       """.stripMargin)
+
+      s ===
+       """こっちは自動生成されたコード
+        |/*##insteadOf
+        |自動生成が気に入らない場合は
+        |##insert*/
+        |
+        |変わりにこれを挿入できます。
+        |
+        |//##end
+        |なんとかしろ
+        |
+       """.stripMargin
+
 
     }
   }
