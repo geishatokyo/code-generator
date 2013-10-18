@@ -3,6 +3,7 @@ package com.geishatokyo.codegen.exporter
 import java.io.File
 import com.geishatokyo.codegen.generator.GeneratedCode
 import com.geishatokyo.codegen.util.RichFile._
+import com.geishatokyo.codegen.util.Logger
 
 /**
  * 
@@ -18,14 +19,14 @@ case class OverwriteExporter(groupName : String,extension : String,exportDir : F
 
     if (f.exists()){
       if (overwrite){
-        println("Overwrite " + f.getAbsolutePath)
+        Logger.log("Overwrite " + f.getAbsolutePath)
         f.write(code.code)
       }else{
-        println("File:" + f.getAbsolutePath + " is already exists")
+        Logger.log("File:" + f.getAbsolutePath + " is already exists")
       }
 
     }else{
-      println("Create " + f.getAbsolutePath)
+      Logger.log("Create " + f.getAbsolutePath)
       f.write(code.code)
     }
 

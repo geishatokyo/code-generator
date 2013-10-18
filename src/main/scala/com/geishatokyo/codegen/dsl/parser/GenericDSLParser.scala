@@ -1,6 +1,7 @@
 package com.geishatokyo.codegen.dsl.parser
 
 import util.parsing.combinator.RegexParsers
+import com.geishatokyo.codegen.util.Logger
 
 /**
  * 
@@ -142,7 +143,7 @@ trait GenericDSLParser extends RegexParsers{
     parseAll(expr,str) match{
       case Success(tree,_) => tree
       case e : NoSuccess => {
-        println("Fail to parse:" + e)
+        Logger.log("Fail to parse:" + e)
         Nil
       }
     }

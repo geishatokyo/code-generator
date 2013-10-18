@@ -1,6 +1,8 @@
 package com.geishatokyo.codegen.replacer
 
 import org.specs2.mutable.Specification
+import com.geishatokyo.codegen.util.FileUtil
+import java.io.File
 
 /**
  * 
@@ -192,6 +194,78 @@ class MergerTest extends Specification {
 
 
     }
+
+    "insert2" in {
+
+      val merger = new Merger
+      val s = merger.merge("""
+         | ##hold
+         | aaa
+         | ##end
+         |/*##insteadOf
+         |  自動生成が気に入らない場合は""".stripMargin + "\n" +
+         """|##insert*/
+         |
+         |変わりにこれを挿入できます。
+         |
+         |//##end
+         | ##hold
+         | aaa
+         | ##end
+         |""".stripMargin,
+        """
+          | ##hold
+          | ##end
+          | こっちは自動生成されたコード
+          |  自動生成が気に入らない場合は""".stripMargin + "\r\n" +
+          """ ##hold
+            | aaa
+            | ##end
+            |なんとかしろ""".stripMargin)
+
+      s ===
+        """
+          | ##hold
+          | aaa
+          | ##end
+          | こっちは自動生成されたコード
+          |/*##insteadOf
+          |  自動生成が気に入らない場合は
+          |##insert*/
+          |
+          |変わりにこれを挿入できます。
+          |
+          |//##end
+          | ##hold
+          | aaa
+          | ##end
+          |なんとかしろ""".stripMargin
+
+
+    }
+
+    "insert2" in {
+
+      val merger = new Merger
+
+      import com.geishatokyo.codegen.util.RichFile._
+
+      val s = merger.merge(
+        file("sample/Equipment_base.scala").readAsString(),
+        file("sample/Equipment_replace.scala").readAsString())
+
+      println("###########################")
+      println(s)
+      println("###########################")
+
+      s.indexOf("##insteadOf") must greaterThan(0)
+
+
+    }
+  }
+
+  def file(path : String) = {
+    new File(getClass.getClassLoader.getResource(path).getFile)
   }
 
 

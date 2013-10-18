@@ -4,7 +4,7 @@ import dsl.ModelConverter
 import dsl.parser.GenericDSLParser
 import exporter.FileExporter
 import generator.{Context, CodeGenerator}
-import util.FileUtil
+import com.geishatokyo.codegen.util.{Logger, FileUtil}
 
 /**
  * 
@@ -80,7 +80,7 @@ class Generator {
             })
           }
           case None => {
-            println("No file exporter for group:" + groupName)
+            Logger.log("No file exporter for group:" + groupName)
             Nil
           }
         }
@@ -105,7 +105,7 @@ class Generator {
       })
 
     }else{
-      println("Dry run.So files aren't exported to actual folder.")
+      Logger.log("Dry run.So files aren't exported to actual folder.")
     }
 
 

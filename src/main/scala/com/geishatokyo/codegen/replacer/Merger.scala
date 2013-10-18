@@ -4,6 +4,9 @@ import parser._
 import parser.HoldBlock
 import parser.ReplaceBlock
 import scala.Some
+import java.io.File
+import com.geishatokyo.codegen.util.RichFile._
+import com.geishatokyo.codegen.util.Logger
 
 /**
  * 
@@ -15,8 +18,33 @@ class Merger {
 
   val lineSep = System.getProperty("line.separator")
 
+  def merge( baseFilePath : File,replaceFile : File) : File = {
 
-  def merge( base : String, replace : String) = {
+    if(!replaceFile.exists()) return baseFilePath
+    else merge(baseFilePath, baseFilePath.readAsString())
+  }
+  def merge( baseFilePath : File,replace : String) : File = {
+
+
+    if (baseFilePath.exists()){
+      val baseFile = baseFilePath.readAsString()
+      val b = merge(baseFile,replace)
+      if (b != baseFile){
+        Logger.log("Merger file " + baseFilePath.getAbsolutePath)
+        baseFilePath.write(b)
+      }else{
+        Logger.log("File didn't change:" + baseFilePath.getAbsolutePath)
+      }
+      baseFilePath
+    }else{
+      Logger.log("Create new file " + baseFilePath.getAbsolutePath)
+      baseFilePath.write(replace)
+      baseFilePath
+    }
+  }
+
+
+  def merge( base : String, replace : String) : String = {
 
     val baseBlocks = parser.parse(base)
     val replaceBlocks = parser.parse(replace)
@@ -78,7 +106,7 @@ class Merger {
             builder.append(replaceMerge(_blocks,blocks))
           }
           case _ => {
-            println("HoldBlock:" + name + " not found.")
+            Logger.log("HoldBlock:" + name + " not found.")
             builder.append(toString(blocks))
           }
         }
@@ -111,7 +139,7 @@ class Merger {
             builder.append(holdMerge(blocks,_blocks))
           }
           case _ => {
-            println("ReplaceBlock:" + name + " not found.")
+            Logger.log("ReplaceBlock:" + name + " not found.")
             builder.append(toString(blocks))
           }
         }

@@ -60,14 +60,14 @@ class RichFile(file : File) {
     val f = asFile
 
     if (!f.getParentFile.exists()){
-      println("Make parent dirs")
+      Logger.log("Make parent dirs")
       f.getParentFile.mkdirs()
     }
 
     val output = new FileOutputStream(f)
     try{
       output.write(bytes)
-      println("Write to " + f.getAbsolutePath)
+      Logger.log("Write to " + f.getAbsolutePath)
     }finally{
       output.close()
     }
@@ -97,7 +97,7 @@ class RichFile(file : File) {
 
   def delete() = {
     val f = asFile
-    println("Delete " + f.getAbsolutePath)
+    Logger.log("Delete " + f.getAbsolutePath)
     f.delete()
   }
 
@@ -111,10 +111,10 @@ class RichFile(file : File) {
     }
     val dir = asFile
     if (dir.isFile){
-      println("Delete " + dir.getAbsolutePath)
+      Logger.log("Delete " + dir.getAbsolutePath)
       dir.delete()
     }else{
-      println("Delete dir " + dir.getAbsolutePath)
+      Logger.log("Delete dir " + dir.getAbsolutePath)
       _deleteDir(dir)
       dir.delete()
     }
