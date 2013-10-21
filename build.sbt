@@ -2,7 +2,7 @@
 
 name := "code-generator"
 
-version := "0.1-SNAPSHOT"
+version := "0.1.0"
 
 organization := "com.geishatokyo"
 
