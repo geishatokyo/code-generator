@@ -21,7 +21,7 @@ class Merger {
   def merge( baseFilePath : File,replaceFile : File) : File = {
 
     if(!replaceFile.exists()) return baseFilePath
-    else merge(baseFilePath, baseFilePath.readAsString())
+    else merge(baseFilePath, replaceFile.readAsString())
   }
   def merge( baseFilePath : File,replace : String) : File = {
 
