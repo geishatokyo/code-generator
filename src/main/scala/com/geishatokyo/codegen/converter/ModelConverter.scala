@@ -1,6 +1,6 @@
-package com.geishatokyo.codegen.dsl
+package com.geishatokyo.codegen.converter
 
-import parser.Definition
+import com.geishatokyo.codegen.dsl.parser.Definition
 
 /**
  * 

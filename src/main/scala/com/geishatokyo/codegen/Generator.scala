@@ -1,19 +1,18 @@
 package com.geishatokyo.codegen
 
-import dsl.ModelConverter
-import dsl.parser.GenericDSLParser
+import com.geishatokyo.codegen.dsl.parser.{Definition, DSLParser, GenericDSLParser}
 import exporter.FileExporter
 import generator.{Context, CodeGenerator}
 import util.FileUtil
+import com.geishatokyo.codegen.converter.ModelConverter
+import java.io.InputStream
 
 /**
  * 
  * User: takeshita
  * DateTime: 13/09/09 17:32
  */
-class Generator {
-
-  private val parser = new GenericDSLParser {}
+class Generator(parser : DSLParser) {
 
   private var modelConverters : Map[Manifest[_],ModelConverter[_]] = Map.empty
   private var codeGenerators : Map[Manifest[_],List[CodeGenerator[_]]] = Map.empty
@@ -47,10 +46,17 @@ class Generator {
   }
 
 
-  def generate( dslFilename : String, dryRun : Boolean = false) = {
+  def generate( dslFilename : String, dryRun : Boolean) : Unit = {
 
     val dsl = FileUtil.read(dslFilename)
-
+    generateFromPlainString(dsl,dryRun)
+  }
+  def generate( stream : InputStream , dryRun : Boolean) : Unit = {
+    val data = new Array[Byte](stream.available())
+    stream.read(data)
+    generateFromPlainString(new String(data,"utf-8"),dryRun)
+  }
+  def generateFromPlainString(dsl : String, dryRun : Boolean) : Unit = {
     val definitions = parser.parse(dsl)
     implicit val context = Context(definitions)
 
