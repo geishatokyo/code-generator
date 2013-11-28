@@ -25,8 +25,8 @@ class UsageSampleTest extends Specification {
       generator += new OverwriteExporter("CaseClass",".scala",new File("target/gen"),true)
 
 
-      generator.generate(getClass.getClassLoader.getResourceAsStream(
-        "sns.model"),false)
+      generator.generate(
+        getClass.getClassLoader.getResourceAsStream("sns.model"),false)
 
     }
   }

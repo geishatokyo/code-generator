@@ -1,4 +1,11 @@
-package com.geishatokyo.codegen.dsl.parser
+package com.geishatokyo.codegen.dsl.parser.api
+
+import com.geishatokyo.codegen.dsl.parser._
+import com.geishatokyo.codegen.dsl.parser.APIParam
+import com.geishatokyo.codegen.dsl.parser.AnonymousParamElement
+import com.geishatokyo.codegen.dsl.parser.NamedParamElement
+import com.geishatokyo.codegen.dsl.parser.APIDefinition
+import com.geishatokyo.codegen.dsl.parser.StringPathElement
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,7 +17,7 @@ package com.geishatokyo.codegen.dsl.parser
 trait APIDSLParser extends DSLParser {
   self : GenericDSLParser =>
 
-  def apiDefinition = "@@" ~> string ~ pathDef ~ lineBreak ~ apiBodyDef ^^{
+  def apiDefinition = "@" ~> string ~ pathDef ~ lineBreak ~ apiBodyDef ^^{
     case method ~ url ~ _ ~ bodies => APIDefinition(method,url,bodies)
   }
 

@@ -1,6 +1,7 @@
-package com.geishatokyo.codegen.dsl.parser
+package com.geishatokyo.codegen.dsl.parser.api
 
 import org.specs2.mutable.Specification
+import com.geishatokyo.codegen.dsl.parser.GenericDSLParser
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,12 +21,12 @@ class APIDSLParserTest extends Specification {
 
       val dsl =
         """
-          |@@get user/(userId : Long)
+          |@get user/(userId : Long)
           |  query : ( start : Int = 2)
           |  body : User
           |  return : User
           |
-          |@@post user/create
+          |@post user/create
           |  query : ( start : Int)
           |  body : (nickname : String),(password : String = "")
           |  return : Unit
