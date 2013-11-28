@@ -15,6 +15,8 @@ class ReplaceMarkerParser {
 
   val endMarker = "##end"
 
+  val insteadOfMarker = "##insteadOf"
+  val insertMarker = "##insert"
 
   def parse( str : String) : List[Block] = parse(str.lines)
 
@@ -61,6 +63,9 @@ class ReplaceMarkerParser {
       if (line.contains(replaceMarker)){
         blocks = blocks ::: List(StringBlock(blockLines),parseInsideReplace(lines))
         blockLines = Nil
+      }else if(line.contains(insteadOfMarker)){
+        blocks = blocks ::: List(StringBlock(blockLines),parseInsteadOf(lines))
+        blockLines = Nil
       }else{
         blockLines = blockLines :+ line
       }
@@ -71,6 +76,38 @@ class ReplaceMarkerParser {
     }
 
     blocks
+  }
+
+
+  def parseInsteadOf(lines : CurrentHoldIterator) : InsteadOfBlock = {
+    var targetLines = List[String]()
+    var allLines = List[String](lines.current)
+    var finishParseInsteadOfArea = false
+    var end = false
+
+    while(lines.hasNext && !finishParseInsteadOfArea){
+      val line = lines.next()
+      allLines = line :: allLines
+      if(line.contains(insertMarker)){
+        finishParseInsteadOfArea = true;
+      }else{
+        targetLines = line :: targetLines
+      }
+
+    }
+
+    while(lines.hasNext && !end){
+      val line = lines.next()
+      allLines = line :: allLines
+
+      if(line.contains(endMarker)){
+        end = true
+      }
+
+    }
+
+    InsteadOfBlock(targetLines.reverse, allLines.reverse)
+
   }
 
   def parseInsideHold(lines : CurrentHoldIterator) : HoldBlock = {

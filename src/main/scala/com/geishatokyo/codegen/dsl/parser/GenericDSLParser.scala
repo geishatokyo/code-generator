@@ -1,6 +1,7 @@
 package com.geishatokyo.codegen.dsl.parser
 
 import util.parsing.combinator.RegexParsers
+import com.geishatokyo.codegen.util.Logger
 
 /**
  * 
@@ -74,7 +75,6 @@ trait GenericDSLParser extends DSLParser with RegexParsers{
   })
 
   def expr = rep(commentLines ~> definitionsDef) <~ commentLines
-
 
 
 }

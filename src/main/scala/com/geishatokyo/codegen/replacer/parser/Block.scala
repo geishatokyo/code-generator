@@ -13,3 +13,5 @@ case class StringBlock(lines : List[String]) extends Block
 case class HoldBlock(name : String, blocks : List[Block]) extends Block
 case class ReplaceBlock(name : String,blocks : List[Block]) extends Block
 
+case class InsteadOfBlock(replaceTarget : List[String], allLines : List[String]) extends Block
+

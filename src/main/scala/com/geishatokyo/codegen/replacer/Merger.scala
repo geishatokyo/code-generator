@@ -4,6 +4,9 @@ import parser._
 import parser.HoldBlock
 import parser.ReplaceBlock
 import scala.Some
+import java.io.File
+import com.geishatokyo.codegen.util.RichFile._
+import com.geishatokyo.codegen.util.Logger
 
 /**
  * 
@@ -13,10 +16,35 @@ import scala.Some
 class Merger {
   val parser = new ReplaceMarkerParser
 
-  val lineSep = "\n"
+  val lineSep = System.getProperty("line.separator")
+
+  def merge( baseFilePath : File,replaceFile : File) : File = {
+
+    if(!replaceFile.exists()) return baseFilePath
+    else merge(baseFilePath, baseFilePath.readAsString())
+  }
+  def merge( baseFilePath : File,replace : String) : File = {
 
 
-  def merge( base : String, replace : String) = {
+    if (baseFilePath.exists()){
+      val baseFile = baseFilePath.readAsString()
+      val b = merge(baseFile,replace)
+      if (b != baseFile){
+        Logger.log("Merger file " + baseFilePath.getAbsolutePath)
+        baseFilePath.write(b)
+      }else{
+        Logger.log("File didn't change:" + baseFilePath.getAbsolutePath)
+      }
+      baseFilePath
+    }else{
+      Logger.log("Create new file " + baseFilePath.getAbsolutePath)
+      baseFilePath.write(replace)
+      baseFilePath
+    }
+  }
+
+
+  def merge( base : String, replace : String) : String = {
 
     val baseBlocks = parser.parse(base)
     val replaceBlocks = parser.parse(replace)
@@ -34,7 +62,11 @@ class Merger {
         replaceMerge(baseBlocks,replaceBlocks)
       }
       case _ => {
-        toString(replaceBlocks)
+        if(baseBlocks.exists(_.isInstanceOf[InsteadOfBlock])){
+          holdMerge(baseBlocks,replaceBlocks)
+        }else{
+          toString(replaceBlocks)
+        }
       }
     }
 
@@ -51,10 +83,22 @@ class Merger {
   protected def holdMerge( base : List[Block], replace : List[Block]) : String = {
     val builder = new StringBuilder()
     val nameMap = toNameMap(base)
+    var insteadOfBlocks = base.collect({
+      case insteadOf : InsteadOfBlock => insteadOf
+    })
 
     replace.foreach({
       case StringBlock(lines) => {
-        lines.foreach(l => builder.append(l + lineSep))
+        val _lines = if(insteadOfBlocks.size > 0){
+          val (replaced,_lines) = applyInsteadOf(insteadOfBlocks.head,lines)
+          if(replaced){
+            insteadOfBlocks = insteadOfBlocks.tail
+          }
+          _lines
+        }else{
+          lines
+        }
+        _lines.foreach(l => builder.append(l + lineSep))
       }
       case HoldBlock(name,blocks) => {
         nameMap.get("hold." + name) match{
@@ -62,13 +106,16 @@ class Merger {
             builder.append(replaceMerge(_blocks,blocks))
           }
           case _ => {
-            println("HoldBlock:" + name + " not found.")
+            Logger.log("HoldBlock:" + name + " not found.")
             builder.append(toString(blocks))
           }
         }
       }
       case ReplaceBlock(name,blocks) => {
         builder.append(toString(blocks))
+      }
+      case InsteadOfBlock(targets,lines) => {
+        lines.foreach(l => builder.append(l + lineSep))
       }
     })
     builder.toString()
@@ -92,7 +139,7 @@ class Merger {
             builder.append(holdMerge(blocks,_blocks))
           }
           case _ => {
-            println("ReplaceBlock:" + name + " not found.")
+            Logger.log("ReplaceBlock:" + name + " not found.")
             builder.append(toString(blocks))
           }
         }
@@ -154,6 +201,16 @@ class Merger {
   }
 
 
+  def applyInsteadOf(insteadOf : InsteadOfBlock,lines : List[String]) = {
+    var i = lines.indexOfSlice(insteadOf.replaceTarget)
+
+    if(i >= 0){
+      true -> (lines.take(i) ::: insteadOf.allLines ::: lines.drop(i + insteadOf.replaceTarget.size))
+    }else{
+      false -> lines
+    }
+
+  }
 
 }
 

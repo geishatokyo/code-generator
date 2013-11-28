@@ -3,7 +3,7 @@ package com.geishatokyo.codegen
 import com.geishatokyo.codegen.dsl.parser.{Definition, DSLParser, GenericDSLParser}
 import exporter.FileExporter
 import generator.{Context, CodeGenerator}
-import util.FileUtil
+import com.geishatokyo.codegen.util.{Logger, FileUtil}
 import com.geishatokyo.codegen.converter.ModelConverter
 import java.io.InputStream
 
@@ -86,7 +86,7 @@ class Generator(parser : DSLParser) {
             })
           }
           case None => {
-            println("No file exporter for group:" + groupName)
+            Logger.log("No file exporter for group:" + groupName)
             Nil
           }
         }
@@ -111,7 +111,7 @@ class Generator(parser : DSLParser) {
       })
 
     }else{
-      println("Dry run.So files aren't exported to actual folder.")
+      Logger.log("Dry run.So files aren't exported to actual folder.")
     }
 
 
