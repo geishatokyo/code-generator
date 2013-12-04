@@ -1,4 +1,4 @@
-package com.geishatokyo.codegen.sample
+package com.geishatokyo.codegen.sample.model
 
 import com.geishatokyo.codegen.generator.{GeneratedCode, Context, CodeGenerator}
 import com.geishatokyo.codegen.dsl.parser._
@@ -7,6 +7,7 @@ import com.geishatokyo.codegen.generator.GeneratedCode
 import com.geishatokyo.codegen.dsl.parser.Scope
 import com.geishatokyo.codegen.dsl.parser.ClassDefinition
 import com.geishatokyo.codegen.dsl.parser.Field
+import com.geishatokyo.codegen.sample.model.ClassDefWrapper
 
 /**
  * Created with IntelliJ IDEA.

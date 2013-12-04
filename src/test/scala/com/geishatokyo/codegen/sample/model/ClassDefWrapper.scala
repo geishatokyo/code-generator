@@ -1,4 +1,4 @@
-package com.geishatokyo.codegen.sample
+package com.geishatokyo.codegen.sample.model
 
 import com.geishatokyo.codegen.dsl.parser.{Field, Scope, BodyElement, ClassDefinition}
 

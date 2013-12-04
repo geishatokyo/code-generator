@@ -1,0 +1,24 @@
+
+
+@class User
+  id : Long PK ShardKey
+  nickname : String contains(emoji)
+  consumerKey : String
+  consumerSecret : String
+  lastLogin : Date
+
+  +scope scala
+    role : List[Role]
+
+  +index consumerKey
+  +index lastLogin desc
+
+
+@class Role : Resource
+  id : Long PK
+  name : String
+
+
+@enum UserStatus
+  OK = 1
+  BANNED = 2
