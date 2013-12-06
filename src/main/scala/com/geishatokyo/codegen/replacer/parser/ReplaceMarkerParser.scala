@@ -59,12 +59,15 @@ class ReplaceMarkerParser {
       if (line.contains(holdMarker)){
         blocks = blocks ::: List(StringBlock(blockLines),parseInsideHold(lines))
         blockLines = Nil
-      }else
-      if (line.contains(replaceMarker)){
+      }else if (line.contains(replaceMarker)){
         blocks = blocks ::: List(StringBlock(blockLines),parseInsideReplace(lines))
         blockLines = Nil
       }else if(line.contains(insteadOfMarker)){
         blocks = blocks ::: List(StringBlock(blockLines),parseInsteadOf(lines))
+        blockLines = Nil
+      }else if(line.contains(insertMarker)){
+        val name = line.substring(line.indexOf(insertMarker) + insertMarker.length).trim
+        blocks = blocks ::: List(StringBlock(blockLines),InsertBlock(name,List(StringBlock(List(line)))))
         blockLines = Nil
       }else{
         blockLines = blockLines :+ line

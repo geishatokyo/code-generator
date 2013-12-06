@@ -2,6 +2,7 @@ package com.geishatokyo.codegen.sample
 
 import com.geishatokyo.codegen.dsl.parser.model.ClassDSLParser
 import com.geishatokyo.codegen.dsl.parser.{Definition, GenericDSLParser}
+import com.geishatokyo.codegen.dsl.parser.api.APIDSLParser
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,6 +15,12 @@ import com.geishatokyo.codegen.dsl.parser.{Definition, GenericDSLParser}
 object MyClassParser extends ClassDSLParser with GenericDSLParser{
   def definitionsDef = {
     classDefinitionDef | enumDefinitionDef
+  }
+}
+
+object MyAPIParser extends ClassDSLParser with APIDSLParser with GenericDSLParser{
+  def definitionsDef = {
+    classDefinitionDef | apiDefinition
 
   }
 }

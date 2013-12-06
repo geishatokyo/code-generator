@@ -2,7 +2,6 @@ package com.geishatokyo.codegen.sample.model
 
 import com.geishatokyo.codegen.converter.ModelConverter
 import com.geishatokyo.codegen.dsl.parser.{ClassDefinition, Definition}
-import com.geishatokyo.codegen.sample.model.ClassDefWrapper
 
 /**
  * Created with IntelliJ IDEA.

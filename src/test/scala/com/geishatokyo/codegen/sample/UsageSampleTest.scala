@@ -6,6 +6,8 @@ import com.geishatokyo.codegen.dsl.parser.GenericDSLParser
 import com.geishatokyo.codegen.Generator
 import com.geishatokyo.codegen.exporter.OverwriteExporter
 import java.io.File
+import com.geishatokyo.codegen.sample.model.{WrapperConverter, ScalaCaseClassGenerator}
+import com.geishatokyo.codegen.sample.api.{PlayControllerGenerator, APIWrapperConverter}
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,6 +29,30 @@ class UsageSampleTest extends Specification {
 
       generator.generate(
         getClass.getClassLoader.getResourceAsStream("sns.model"),false)
+
+    }
+  }
+
+  "APIs" should{
+    "export as such" in {
+      val generator = new Generator(MyClassParser)
+
+      // model converters
+      generator += new WrapperConverter()
+      generator += new APIWrapperConverter()
+
+      // code generators
+      generator += new ScalaCaseClassGenerator()
+      generator += new PlayControllerGenerator()
+
+      // exporters
+      generator += new OverwriteExporter("API",".scala",new File("target/gen"),true)
+      generator += new OverwriteExporter("CaseClass",".scala",new File("target/gen"),true)
+
+      generator.generate(
+        getClass.getClassLoader.getResourceAsStream("sns.model"),false)
+
+
 
     }
   }

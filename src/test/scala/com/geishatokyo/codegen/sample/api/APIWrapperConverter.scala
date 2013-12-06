@@ -1,5 +1,8 @@
 package com.geishatokyo.codegen.sample.api
 
+import com.geishatokyo.codegen.converter.ModelConverter
+import com.geishatokyo.codegen.dsl.parser.{APIDefinition, Definition}
+
 /**
  * Created with IntelliJ IDEA.
  * User: takezoux2
@@ -7,8 +10,12 @@ package com.geishatokyo.codegen.sample.api
  * Time: 17:33
  * To change this template use File | Settings | File Templates.
  */
-class APIWrapperConverter {
-
-
-
+class APIWrapperConverter extends ModelConverter[APIWrapper] {
+  def convert(definitions: List[Definition]): List[APIWrapper] = {
+    definitions.collect({
+      case apiDef : APIDefinition => {
+        APIWrapper(apiDef)
+      }
+    })
+  }
 }

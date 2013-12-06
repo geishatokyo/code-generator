@@ -4,10 +4,6 @@ import com.geishatokyo.codegen.generator.{GeneratedCode, Context, CodeGenerator}
 import com.geishatokyo.codegen.dsl.parser._
 import com.geishatokyo.codegen.generator.Context
 import com.geishatokyo.codegen.generator.GeneratedCode
-import com.geishatokyo.codegen.dsl.parser.Scope
-import com.geishatokyo.codegen.dsl.parser.ClassDefinition
-import com.geishatokyo.codegen.dsl.parser.Field
-import com.geishatokyo.codegen.sample.model.ClassDefWrapper
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,11 +20,7 @@ class ScalaCaseClassGenerator extends CodeGenerator[ClassDefWrapper] {
   }
 
 
-  def dataTypeToString(dt : DataType) : String = dt match{
-    case SimpleData("BigString") => "String"
-    case SimpleData(name) => name
-    case ListData(dataType) => "List[" + dataTypeToString(dataType) + "]"
-  }
+  def dataTypeToString(dt : DataType) : String = ScalaDataType.dataTypeToString(dt)
 
   def toCaseClass(model : ClassDefWrapper) = {
 

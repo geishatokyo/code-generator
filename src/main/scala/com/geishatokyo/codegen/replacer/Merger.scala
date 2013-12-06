@@ -117,6 +117,9 @@ class Merger {
       case InsteadOfBlock(targets,lines) => {
         lines.foreach(l => builder.append(l + lineSep))
       }
+      case InsertBlock(name,blocks) => {
+        builder.append(toString(blocks))
+      }
     })
     builder.toString()
   }
@@ -140,6 +143,24 @@ class Merger {
           }
           case _ => {
             Logger.log("ReplaceBlock:" + name + " not found.")
+            builder.append(toString(blocks))
+          }
+        }
+      }
+      case InsertBlock(name,blocks) => {
+        nameMap.get("replace." + name) match{
+          case Some(_blocks) => {
+            val v = toString(_blocks.map(b => b match{
+              case StringBlock(lines) => {
+                StringBlock(lines.drop(1).dropRight(1))
+              }
+              case _ => b
+            }))
+
+            builder.append(v)
+            builder.append(toString(blocks))
+          }
+          case None => {
             builder.append(toString(blocks))
           }
         }
@@ -171,6 +192,7 @@ class Merger {
     blocks.collect({
       case HoldBlock(name,blocks) => ("hold." + name) -> blocks
       case ReplaceBlock(name,blocks) => ("replace." + name) -> blocks
+      case InsertBlock(name,blocks) => ("replace." + name) -> blocks
     }).toMap
 
   }
@@ -180,11 +202,16 @@ class Merger {
     val topLevel = blocks.collectFirst({
       case HoldBlock(_,_) => TopLevel.Hold
       case ReplaceBlock(_,_) => TopLevel.Replace
+      case i : InsertBlock => TopLevel.Replace
+      case i : InsteadOfBlock => TopLevel.Hold
     })
 
     topLevel match{
       case Some(TopLevel.Hold) => {
-        if (blocks.exists(_.isInstanceOf[ReplaceBlock])){
+        if (blocks.exists( b => {
+          b.isInstanceOf[ReplaceBlock] |
+          b.isInstanceOf[InsertBlock]
+        })){
           throw new Exception("Can't use both hold and replace marker on top level.")
         }
       }

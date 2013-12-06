@@ -113,6 +113,41 @@ class MergerTest extends Specification {
         """.stripMargin
     }
 
+    "merge insert" in{
+      val merger = new Merger
+      val base =
+        """
+          |##insert here
+        """.stripMargin
+      val first = merger.merge(base,
+        """
+          |##replace here
+          |new line
+          |##end
+        """.stripMargin)
+      first.trim ===
+        """
+          |new line
+          |##insert here
+        """.stripMargin.trim
+
+      val second = merger.merge(first,
+        """
+          |##replace here
+          |new line2
+          |##end
+        """.stripMargin
+      )
+
+
+      second.trim() ===
+        """
+          |new line
+          |new line2
+          |##insert here
+        """.stripMargin.trim
+
+    }
 
   }
 

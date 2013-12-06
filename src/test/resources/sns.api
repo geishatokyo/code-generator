@@ -1,24 +1,15 @@
 
 
-@class User
-  id : Long PK ShardKey
-  nickname : String contains(emoji)
-  consumerKey : String
-  consumerSecret : String
-  lastLogin : Date
-
-  +scope scala
-    role : List[Role]
-
-  +index consumerKey
-  +index lastLogin desc
+@get user/info/(userId : Long)
+  return : User
 
 
-@class Role : Resource
-  id : Long PK
-  name : String
+@post user/create
+  body : (nickname : String)
+  return : CreateResult
 
 
-@enum UserStatus
-  OK = 1
-  BANNED = 2
+@class CreateResult : extends(Result)
+  resultCode : Int
+  user : User
+
