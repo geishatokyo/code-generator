@@ -104,11 +104,13 @@ class Generator(parser : DSLParser) {
         case (group,codes) => {
           val exporters = fileExporters(group)
           exporters.foreach(e => {
-            e.beforeExport()
-            codes.foreach( c => {
-              e.export(c._1,c._2)
-            })
-            e.afterExport()
+            if(e.checkExport){
+              e.beforeExport()
+              codes.foreach( c => {
+                e.export(c._1,c._2)
+              })
+              e.afterExport()
+            }
           })
 
         }
