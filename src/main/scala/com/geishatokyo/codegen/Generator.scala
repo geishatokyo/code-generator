@@ -6,6 +6,7 @@ import generator.{Context, CodeGenerator}
 import com.geishatokyo.codegen.util.{Logger, FileUtil}
 import com.geishatokyo.codegen.converter.ModelConverter
 import java.io.InputStream
+import java.util.Date
 
 /**
  * 
@@ -58,6 +59,9 @@ class Generator(parser : DSLParser) {
   }
   def generateFromPlainString(dsl : String, dryRun : Boolean) : Unit = {
     val definitions = parser.parse(dsl)
+    // Add execution history.
+    ExecutionHistory.add(ExecutionHistory.Execution(definitions,new Date(),dryRun))
+
     implicit val context = Context(definitions)
 
     val generatedCodes = codeGenerators.flatMap({
@@ -100,11 +104,13 @@ class Generator(parser : DSLParser) {
         case (group,codes) => {
           val exporters = fileExporters(group)
           exporters.foreach(e => {
-            e.beforeExport()
-            codes.foreach( c => {
-              e.export(c._1,c._2)
-            })
-            e.afterExport()
+            if(e.checkExport){
+              e.beforeExport()
+              codes.foreach( c => {
+                e.export(c._1,c._2)
+              })
+              e.afterExport()
+            }
           })
 
         }
