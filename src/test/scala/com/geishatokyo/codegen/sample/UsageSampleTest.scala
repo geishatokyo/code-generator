@@ -6,6 +6,7 @@ import com.geishatokyo.codegen.dsl.parser.GenericDSLParser
 import com.geishatokyo.codegen.Generator
 import com.geishatokyo.codegen.exporter.OverwriteExporter
 import java.io.File
+import com.geishatokyo.codegen.sample.model.{WrapperConverter, ScalaCaseClassGenerator}
 
 /**
  * Created with IntelliJ IDEA.
