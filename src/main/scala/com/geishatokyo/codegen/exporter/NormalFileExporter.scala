@@ -18,7 +18,11 @@ trait NormalFileExporter extends FileExporter {
   lazy val dir = new File("target/code_gen/" + groupName)
   val merger = new Merger
 
-  lazy val ext = if (extension.startsWith(".")) extension else ("." + extension)
+  lazy val ext = {
+    if(extension == null || extension.length == 0) ""
+    else if (extension.startsWith(".")) extension
+    else ("." + extension)
+  }
 
   def filename(code : GeneratedCode) = code.name + ext
 
