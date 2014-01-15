@@ -16,3 +16,5 @@ case class ReplaceBlock(name : String,blocks : List[Block]) extends Block
 case class InsteadOfBlock(replaceTarget : List[String], allLines : List[String]) extends Block
 
 case class InsertBlock(name : String,blocks : List[Block]) extends Block
+
+case class AppendBlock(name : String,blocks : List[Block]) extends Block

@@ -17,6 +17,7 @@ class ReplaceMarkerParser {
 
   val insteadOfMarker = "##insteadOf"
   val insertMarker = "##insert"
+  val appendMarker = "##append"
 
   def parse( str : String) : List[Block] = parse(str.lines)
 
@@ -69,6 +70,10 @@ class ReplaceMarkerParser {
         val name = line.substring(line.indexOf(insertMarker) + insertMarker.length).trim
         blocks = blocks ::: List(StringBlock(blockLines),InsertBlock(name,List(StringBlock(List(line)))))
         blockLines = Nil
+      }else if(line.contains(appendMarker)){
+        blocks = blocks ::: List(StringBlock(blockLines),parseInsideAppend(lines))
+        blockLines = Nil
+
       }else{
         blockLines = blockLines :+ line
       }
@@ -185,4 +190,35 @@ class ReplaceMarkerParser {
     ReplaceBlock(name,blocks)
   }
 
+  def parseInsideAppend(lines : CurrentHoldIterator) : AppendBlock = {
+
+    val current = lines.current
+    val name = {
+      val s = current.substring(current.indexOf(appendMarker) + appendMarker.length).split(" ")
+      s.find(_.length > 0).getOrElse{
+        var i = lines.nextIndex
+        "append" + i
+      }
+    }
+
+
+    var blockLines : List[String] = List(current)
+    var blocks : List[Block] = Nil
+    var end = false
+
+    while(lines.hasNext && !end){
+      var line = lines.next()
+      if (line.contains(endMarker)){
+        blockLines = blockLines :+ line
+        end = true
+      }else{
+        blockLines = blockLines :+ line
+      }
+    }
+
+    blocks = blocks :+ StringBlock(blockLines)
+
+
+    AppendBlock(name,blocks)
+  }
 }

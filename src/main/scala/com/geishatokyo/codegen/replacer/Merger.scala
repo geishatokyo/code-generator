@@ -165,6 +165,17 @@ class Merger {
           }
         }
       }
+      case AppendBlock(name,blocks) => {
+        (nameMap.get("append." + name) orElse nameMap.get("replace." + name)) match{
+          case Some(List(StringBlock(lines))) => {
+            builder.append(toString(List(StringBlock(lines.drop(1).dropRight(1)))))
+            builder.append(toString(blocks))
+          }
+          case None => {
+            builder.append(toString(blocks))
+          }
+        }
+      }
     })
     builder.toString()
   }
@@ -181,7 +192,6 @@ class Merger {
       }
       case ReplaceBlock(_,blocks) => {
         builder.append(toString(blocks))
-
       }
     })
     builder.toString()
@@ -193,6 +203,7 @@ class Merger {
       case HoldBlock(name,blocks) => ("hold." + name) -> blocks
       case ReplaceBlock(name,blocks) => ("replace." + name) -> blocks
       case InsertBlock(name,blocks) => ("replace." + name) -> blocks
+      case AppendBlock(name,blocks) => ("append." + name) -> blocks
     }).toMap
 
   }
@@ -204,6 +215,7 @@ class Merger {
       case ReplaceBlock(_,_) => TopLevel.Replace
       case i : InsertBlock => TopLevel.Replace
       case i : InsteadOfBlock => TopLevel.Hold
+      case AppendBlock(_,_) => TopLevel.Replace
     })
 
     topLevel match{

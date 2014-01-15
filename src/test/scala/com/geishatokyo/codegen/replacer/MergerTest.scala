@@ -297,6 +297,30 @@ class MergerTest extends Specification {
 
 
     }
+
+    "append" in {
+
+      val merger = new Merger
+      val s = merger.merge(
+        """
+          |##append a
+          |##end
+        """.stripMargin.trim,
+        """
+          |
+          |##append a
+          |この文章が、ベースのappendマーカーの上に挿入されます
+          |##end
+        """.stripMargin)
+
+      s ===
+        """
+          |この文章が、ベースのappendマーカーの上に挿入されます
+          |##append a
+          |##end
+        """.stripMargin.trim
+    }
+
   }
 
   def file(path : String) = {
