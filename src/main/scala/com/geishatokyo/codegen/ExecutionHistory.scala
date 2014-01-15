@@ -7,10 +7,11 @@ import java.util.Date
  */
 object ExecutionHistory {
 
-  private var executions : List[Execution] = Nil
+  private var _executions : List[Execution] = Nil
   def add(execution : Execution) = {
-    executions = executions :+ execution
+    _executions = _executions :+ execution
   }
+  def executions = _executions
 
   case class Execution(definitions : List[Any] , executed : Date, dryRun : Boolean)
 
