@@ -41,7 +41,7 @@ class ReplaceMarkerParser {
 
     private var index = 0
 
-    def nextIndex {
+    def nextIndex() = {
       index += 1
       index
     }

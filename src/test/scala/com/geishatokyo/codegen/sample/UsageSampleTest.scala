@@ -30,6 +30,8 @@ class UsageSampleTest extends Specification {
       generator.generate(
         getClass.getClassLoader.getResourceAsStream("sns.model"),false)
 
+      ok
+
     }
   }
 
@@ -52,7 +54,7 @@ class UsageSampleTest extends Specification {
       generator.generate(
         getClass.getClassLoader.getResourceAsStream("sns.model"),false)
 
-
+      ok
 
     }
   }

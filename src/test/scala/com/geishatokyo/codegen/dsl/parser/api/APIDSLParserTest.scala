@@ -37,6 +37,8 @@ class APIDSLParserTest extends Specification {
 
       println(parsed)
 
+      ok
+
     }
   }
 
